@@ -6,8 +6,9 @@ $(document).ready(function () {
     $('#game').hide();
     $('#backToHome').hide();
 
-    const socket = io.connect('localhost:5000');
+    // const socket = io.connect('localhost:5000');
     // const socket = io.connect('192.168.1.193:5000');
+    const socket = io.connect();
 
     let board = [
         ['', '', ''],

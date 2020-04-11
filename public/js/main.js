@@ -1,5 +1,5 @@
 $(document).ready(function(){
-
+    
     $("#registerButton").click(function() {
         $.ajax({
             type:'POST',
