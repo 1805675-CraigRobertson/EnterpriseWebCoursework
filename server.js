@@ -96,7 +96,7 @@ app.post('/register', async (req, res) => {
 
 //get Database Object
 async function loadUsersCollection(){
-    const client = await mongodb.MongoClient.connect(url, {
+    const client = await mongodb.MongoClient.connect('mongodb+srv://CGR:mongodbPassword@cluster0-p86do.mongodb.net/test?retryWrites=true&w=majority', {
         useNewUrlParser: true
     });
     return client.db('CourseWorkDatabase').collection('users');
