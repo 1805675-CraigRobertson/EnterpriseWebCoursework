@@ -42,8 +42,12 @@ app.get('/login', async (req, res) => {
 });
 
 app.get('/userDeets', async (req, res) =>{
-    const users = await loadUsersCollection();
-    res.send(await users.find({}).toArray())
+    try{
+        const users = await loadUsersCollection();
+        res.send(await users.find({}).toArray())
+    }catch{
+        res.send(process.env.MONGODB_URI)
+    }
 })
 
 app.post('/login', async (req, res) => {
@@ -96,7 +100,7 @@ app.post('/register', async (req, res) => {
 
 //get Database Object
 async function loadUsersCollection(){
-    const client = await mongodb.MongoClient.connect('mongodb+srv://CGR:mongodbPassword@cluster0-p86do.mongodb.net/test?retryWrites=true&w=majority', {
+    const client = await mongodb.MongoClient.connect(url, {
         useNewUrlParser: true
     });
     return client.db('CourseWorkDatabase').collection('users');
