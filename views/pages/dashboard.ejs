@@ -1,0 +1,54 @@
+<html>
+<%- include('../partials/head') %>
+
+<body>
+    <div class="parent">
+        <div class="div1">
+            <%- include('../partials/navigation') %>
+        </div>
+        <div class="div2">
+            <div class="childGrid">
+                <div class="div1child">
+                    <div id="UsernameDiv">
+                        <p>Username: </p>
+                        <p id="getUsername"></p>
+                    </div>
+                    <div id="RoomIDDiv">
+                        <p>Room ID:</p>
+                        <p id="getRoomID"></p>
+                    </div>
+                </div>
+                <div class="div2child">
+                    <div id="inputs">
+                        <h2>Create Game</h2>
+                        <input type="text" placeholder="<%= username %>" id="name" value="<%= username %>">
+                        <button id="send">Create</button>
+        
+                        <h2>Join Game</h2>
+                        <input type="text" placeholder="Username" id="joinName" value="<%= username %>">
+                        <input type="text" placeholder="Room ID" id="roomID">
+                        <button id="join">Join</button>
+                    </div>
+                </div>
+                <div class="div3child">
+                    <div id="message"></div>
+                    <button id="backToHome">Click to go back to Menu</button> 
+                </div>
+                <div class="div4child"><div id="whosTurn"></div></div>
+                <div class="div5child"><div id="opponent"></div></div>
+                <div class="div6child"><div id="err"></div></div>
+            </div>
+
+
+        </div>
+        <div class="div3"></div>
+        <div class="div4">
+            <div id="game"></div>
+            <h4 id="chooseOption">Please Select an Option above</h4>
+        </div>
+        <div class="div5"></div>
+        <div class="div6"><%- include('../partials/foot') %></div>
+    </div>
+</body>
+
+</html>

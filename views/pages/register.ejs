@@ -1,0 +1,22 @@
+<html>
+    <%- include('../partials/head') %>
+<body>
+  <div class="parent">
+    <div class="div1"><%- include('../partials/navigation') %></div>
+    <div class="div2"><h1>Register</h1></div>
+    <div class="div3"></div>
+    <div class="div4">
+      <div id="registerErr" style="color:red;"></div>
+      <div id="register">
+        <h1>Register</h1>
+        <input type="text" id="username" placeholder="Username" />
+        <input type="email" id="email" placeholder="Email Address" />
+        <input type="password" id="password" placeholder="Password" />
+        <button id="registerButton">Register</button>
+      </div>
+    </div>
+    <div class="div5"></div>
+    <div class="div6"><%- include('../partials/foot') %></div>
+  </div>
+</body>
+</html>
