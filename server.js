@@ -10,6 +10,8 @@ const app = express()
 var server = require('http').createServer(app);
 const io = require('socket.io')(server)
 
+const url = process.env.MONGODB_URI;
+
 app.use(session({
 	secret: 'secret',
 	resave: true,
@@ -94,7 +96,7 @@ app.post('/register', async (req, res) => {
 
 //get Database Object
 async function loadUsersCollection(){
-    const client = await mongodb.MongoClient.connect(process.env.MONGODB_URI, {
+    const client = await mongodb.MongoClient.connect(url, {
         useNewUrlParser: true
     });
     return client.db('CourseWorkDatabase').collection('users');
