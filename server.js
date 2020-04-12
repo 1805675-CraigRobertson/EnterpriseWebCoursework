@@ -5,12 +5,11 @@ const cors = require('cors');
 const session = require('express-session')
 const bcrypt = require('bcryptjs')
 const port = process.env.PORT || 5000;
+const url = process.env.MONGODB_URI;
 
 const app = express()
 var server = require('http').createServer(app);
 const io = require('socket.io')(server)
-
-const url = process.env.MONGODB_URI;
 
 app.use(session({
 	secret: 'secret',
@@ -42,12 +41,8 @@ app.get('/login', async (req, res) => {
 });
 
 app.get('/userDeets', async (req, res) =>{
-    try{
-        const users = await loadUsersCollection();
-        res.send(await users.find({}).toArray())
-    }catch{
-        res.send(process.env.MONGODB_URI)
-    }
+    const users = await loadUsersCollection();
+    res.send(await users.find({}).toArray())
 })
 
 app.post('/login', async (req, res) => {
@@ -55,7 +50,7 @@ app.post('/login', async (req, res) => {
     const user = await users.findOne({username: req.body.username});
     if(user == null){
         //user not found
-        res.send({result:2, message: 'Falied'})
+        res.send({result:2, message: 'Falied1'})
     }
 
     try{
@@ -66,10 +61,10 @@ app.post('/login', async (req, res) => {
             res.send({result:1, message:'Success'});
         }else{
             //passwords dont match
-            res.send({result:2, message: 'Falied'})
+            res.send({result:2, message: 'Falied2'})
         }
     }catch{
-        res.send({result:2, message: 'Falied'})
+        res.send({result:2, message: 'Falied3'})
     }
 });
 
