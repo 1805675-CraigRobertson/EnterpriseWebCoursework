@@ -59,6 +59,7 @@ $(document).ready(function () {
         $('#inputs').hide();
         $('#game').show();
         $('#chooseOption').hide();
+        $('#backToHome').hide();
         clientTurn = true;
         XorO = 'X';
     })
@@ -80,6 +81,7 @@ $(document).ready(function () {
         })
         $('#err').text("")
         $('#chooseOption').hide();
+        $('#backToHome').hide();
     })
 
     //Updates Player2 Display with Name and Room ID
