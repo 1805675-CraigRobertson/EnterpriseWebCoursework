@@ -61,6 +61,7 @@ $(document).ready(function () {
         $('#game').show();
         $('#chooseOption').hide();
         $('#backToHome').hide();
+        $('#message').text("");
         clientTurn = true;
         XorO = 'X';
     })
@@ -110,6 +111,7 @@ $(document).ready(function () {
                 clientTurn = false;
                 XorO = 'O'
                 $('#err').hide()
+                $('#message').text("");
             }else{
                 $('#err').show();
                 $('#err').text('Please try Again!')
