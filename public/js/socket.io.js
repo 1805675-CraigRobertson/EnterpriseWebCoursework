@@ -129,14 +129,13 @@ $(document).ready(function () {
                     $('#whosTurn').text("Please Wait For Your Opponent");
                     $('#err').text("")
                     clientTurn = false;
-                    if (gameEnded == false) {
-                        socket.emit('turnPlayed', {
-                            XorO: XorO,
-                            gameGrid: updateGameGrid(),
-                            username: $('#getUsername').text(),
-                            room: $('#getRoomID').text()
-                        })
-                    }
+                    socket.emit('turnPlayed', {
+                        XorO: XorO,
+                        gameGrid: updateGameGrid(),
+                        username: $('#getUsername').text(),
+                        room: $('#getRoomID').text()
+                    })
+                    
 
                 }
             } else {
@@ -156,6 +155,7 @@ $(document).ready(function () {
             $('#whosTurn').text("Your Turn! You are X's");
         }
         $('#whosTurn').show();
+        $('#err').hide()
         generate3x3(data.gameGrid)
         updateGameGrid();
     })
