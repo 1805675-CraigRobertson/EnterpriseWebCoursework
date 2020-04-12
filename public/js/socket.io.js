@@ -79,6 +79,7 @@ $(document).ready(function () {
             room: $('#getRoomID').text()
         })
         $('#err').text("")
+        $('#chooseOption').hide();
     })
 
     //Updates Player2 Display with Name and Room ID
