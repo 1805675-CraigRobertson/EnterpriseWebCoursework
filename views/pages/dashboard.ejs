@@ -11,7 +11,7 @@
                 <div class="div1child">
                     <div id="UsernameDiv">
                         <p>Username: </p>
-                        <p id="getUsername"></p>
+                        <p id="getUsername"><%= username %></p>
                     </div>
                     <div id="RoomIDDiv">
                         <p>Room ID:</p>
@@ -21,12 +21,10 @@
                 <div class="div2child">
                     <div id="inputs">
                         <h2>Create Game</h2>
-                        <input type="text" placeholder="<%= username %>" id="name" value="<%= username %>">
-                        <button id="send">Create</button>
+                        <button id="send">Create New Game</button>
         
                         <h2>Join Game</h2>
-                        <input type="text" placeholder="Username" id="joinName" value="<%= username %>">
-                        <input type="text" placeholder="Room ID" id="roomID">
+                        <input type="text" placeholder="room-{Room Value}" id="roomID">
                         <button id="join">Join</button>
                     </div>
                 </div>

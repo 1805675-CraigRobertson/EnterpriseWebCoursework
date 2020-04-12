@@ -180,7 +180,15 @@ input[type=text], select, button {
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-  }
+}
+
+#send{
+    width:50%;
+}
+
+#join, #roomID{
+    width:25%
+}
 
 #login #username, #password{
     width: 80%;

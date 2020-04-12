@@ -133,14 +133,16 @@ io.on('connection', function(socket){
         socket.emit('newGame', {name: data.name, room: 'room-'+rooms});
     })
 
-    socket.on('joinGame', function(data){
+    socket.on('joinGame', function(data,fn){
         var room = io.nsps['/'].adapter.rooms[data.room];
         if( room && room.length == 1){
             socket.join(data.room);
             socket.broadcast.to(data.room).emit('player1', {name: data.name});
             socket.emit('player2', {name: data.name, room: data.room})
+            fn(true);
         }
         else {
+            fn(false);
             socket.emit('err', {message: 'Sorry, The room is full!'});
         }
       });

@@ -3,6 +3,7 @@ $(document).ready(function () {
     var gameEnded = false;
     var XorO = 'X';
     var twoPlayers = false;
+    var noRoom = false;
     $('#game').hide();
     $('#backToHome').hide();
 
@@ -54,7 +55,7 @@ $(document).ready(function () {
     //Creates new Game Instance
     $('#send').click(function () {
         socket.emit('createGame', {
-            name: $("#name").val()
+            name: $("#getUsername").text()
         })
         $('#inputs').hide();
         $('#game').show();
@@ -66,12 +67,13 @@ $(document).ready(function () {
 
     //Updates Player1 Display with Name and Room ID
     socket.on('newGame', function (data) {
-        $('#getUsername').text(data.name)
+        // $('#getUsername').text(data.name)
         $('#getRoomID').text(data.room)
         $('#whosTurn').text("Your Turn! You are X's");
+        $('#err').hide();
     })
 
-    //Updates when Player2 enters displayinh their Name, also broadcasts player1 name to player 2
+    //Updates when Player2 enters displaying their Name, also broadcasts player1 name to player 2
     socket.on('player1', function (data) {
         twoPlayers = true;
         $('#opponent').text("You are playing against: " + data.name);
@@ -84,7 +86,7 @@ $(document).ready(function () {
 
     //Updates Player2 Display with Name and Room ID
     socket.on('player2', function (data) {
-        $('#getUsername').text(data.name)
+        // $('#getUsername').text(data.name)
         $('#getRoomID').text(data.room)
         $('#chooseOption').hide();
         $('#backToHome').hide();
@@ -99,13 +101,19 @@ $(document).ready(function () {
     //Joins Excisting Game Instance
     $('#join').click(function () {
         socket.emit('joinGame', {
-            name: $('#joinName').val(),
+            name: $('#getUsername').text(),
             room: $('#roomID').val()
+        }, function(data){
+            if(data == true){
+                $('#inputs').hide();
+                $('#game').show();
+                clientTurn = false;
+                XorO = 'O'
+                $('#err').hide()
+            }else{
+                $('#err').text('Please try Again!')
+            }
         })
-        $('#inputs').hide();
-        $('#game').show();
-        clientTurn = false;
-        XorO = 'O'
     })
 
     //Error listener
