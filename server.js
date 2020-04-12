@@ -27,7 +27,6 @@ app.use(function(req, res, next) {
   });
 
 app.get('/', async(req, res) => {
-    console.log(req.session.username);
     res.render('pages/main', {username: req.session.username});
 })
 
@@ -57,7 +56,6 @@ app.post('/login', async (req, res) => {
         if(await bcrypt.compare(req.body.password, user.password)){
             req.session.loggedin = true;
             req.session.username = user.username;
-            console.log(req.session.username);
             res.send({result:1, message:'Success'});
         }else{
             //passwords dont match
@@ -74,21 +72,27 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', async (req, res) => {
-    if(req.body.password == "" || req.body.username == "" || req.body.email == ""){
+    const users = await loadUsersCollection();
+    const user = await users.findOne({username: req.body.username});
+    if(user){
         res.send({result:2, message: 'Failed'})
     }else{
-        try{
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            const users = await loadUsersCollection();
-            await users.insertOne({
-                id: Date.now().toString(),
-                username: req.body.username,
-                email: req.body.email,
-                password: hashedPassword
-            });
-            res.send({result:1, message: 'Success'})
-        }catch{
+        if(req.body.password == "" || req.body.username == "" || req.body.email == ""){
             res.send({result:2, message: 'Failed'})
+        }else{
+            try{
+                const hashedPassword = await bcrypt.hash(req.body.password, 10);
+                // const users = await loadUsersCollection();
+                await users.insertOne({
+                    id: Date.now().toString(),
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: hashedPassword
+                });
+                res.send({result:1, message: 'Success'})
+            }catch{
+                res.send({result:2, message: 'Failed'})
+            }
         }
     }
 })
@@ -126,7 +130,6 @@ app.get('/tic', (req,res) => {
 //Socket.io could be in /Dashboard
 var rooms = 0;
 io.on('connection', function(socket){
-    console.log("client connected", socket.id);
 
     socket.on('createGame', function(data){
         socket.join('room-' + ++rooms);
