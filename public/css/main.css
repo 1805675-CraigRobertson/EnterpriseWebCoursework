@@ -77,7 +77,8 @@ li a:hover {
 .div6 { grid-area: 4 / 1 / 5 / 5; }
 
 .parent>div {
-    background: rgb(233, 233, 233);
+    /* background: rgb(233, 233, 233); */
+    background: rgb(226, 226, 226);
     padding: 1em;
 }
 

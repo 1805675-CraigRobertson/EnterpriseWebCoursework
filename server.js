@@ -146,7 +146,7 @@ io.on('connection', function(socket){
         }
         else {
             fn(false);
-            socket.emit('err', {message: 'Sorry, The room is full!'});
+            socket.emit('err', {message: "Sorry, The room is either full or doesn't exist!"});
         }
       });
 
