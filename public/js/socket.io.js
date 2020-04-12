@@ -111,6 +111,7 @@ $(document).ready(function () {
                 XorO = 'O'
                 $('#err').hide()
             }else{
+                $('#err').show();
                 $('#err').text('Please try Again!')
             }
         })
@@ -118,6 +119,7 @@ $(document).ready(function () {
 
     //Error listener
     socket.on('err', function (data) {
+        $('#err').show();
         $('#err').text(data.message)
     })
 
@@ -129,6 +131,7 @@ $(document).ready(function () {
                 //When user clicks on grid
                 var idAttr = $(this).attr('id');
                 if ($('#' + idAttr).text() == "X" || $('#' + idAttr).text() == "O") {
+                    $('#err').show();
                     $('#err').text("Option Not Value, Choose Another!")
                 } else {
                     $('#' + idAttr).text(XorO);
@@ -147,6 +150,7 @@ $(document).ready(function () {
 
                 }
             } else {
+                $('#err').show();
                 $('#err').text("Please Wait for Player 2!")
             }
         } else {
