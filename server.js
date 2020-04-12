@@ -5,7 +5,7 @@ const cors = require('cors');
 const session = require('express-session')
 const bcrypt = require('bcryptjs')
 const port = process.env.PORT || 5000;
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 
 const app = express()
 var server = require('http').createServer(app);

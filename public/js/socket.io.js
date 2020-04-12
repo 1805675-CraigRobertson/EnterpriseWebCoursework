@@ -80,14 +80,14 @@ $(document).ready(function () {
             room: $('#getRoomID').text()
         })
         $('#err').text("")
-        $('#chooseOption').hide();
-        $('#backToHome').hide();
     })
 
     //Updates Player2 Display with Name and Room ID
     socket.on('player2', function (data) {
         $('#getUsername').text(data.name)
         $('#getRoomID').text(data.room)
+        $('#chooseOption').hide();
+        $('#backToHome').hide();
     })
 
     //Updates Player2 Display with Player1 Name
@@ -164,6 +164,9 @@ $(document).ready(function () {
         gameEnded = true;
         console.log(gameEnded)
         $('#message').text("The winner is: " + data.winningUser)
+        if(data.winningUser != $('#getUsername').text()){
+            $('#message').css('color', 'red');
+        }
         $('#whosTurn').text("Please Wait For Your Opponent");
         $('#backToHome').show();
     })
