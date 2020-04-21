@@ -1,26 +1,21 @@
 $(document).ready(function () {
     var clientTurn = false;
     var gameEnded = false;
-    var XorO = 'X';
+    var XorO = '';
     var twoPlayers = false;
-    var noRoom = false;
-    $('#game').hide();
-    $('#backToHome').hide();
-
-    // const socket = io.connect('localhost:5000');
-    // const socket = io.connect('192.168.1.193:5000');
-    const socket = io.connect();
-
     let board = [
         ['', '', ''],
         ['', '', ''],
         ['', '', '']
     ];
+    const socket = io.connect();
 
+    $('#game').hide();
+    $('#backToHome').hide();
     generate3x3(board)
     updateGameGrid()
 
-    //Display 3x3 grid
+    //Generate & Display 3x3 grid
     function generate3x3(board) {
         $('#game3x3').remove();
         var table = $('<table id="game3x3">')
@@ -35,6 +30,7 @@ $(document).ready(function () {
         $('#game').append(table)
     }
 
+    //Updates Grid with user input
     function updateGameGrid() {
         let updatedBoard = [
             ['', '', ''],
@@ -53,14 +49,12 @@ $(document).ready(function () {
     }
 
     //Creates new Game Instance
-    $('#send').click(function () {
+    $('#createNewGame').click(function () {
         socket.emit('createGame', {
             name: $("#getUsername").text()
         })
-        $('#inputs').hide();
+        $('#inputs, #backToHome').hide();
         $('#game').show();
-        $('#chooseOption').hide();
-        $('#backToHome').hide();
         $('#message').text("");
         clientTurn = true;
         XorO = 'X';
@@ -68,38 +62,13 @@ $(document).ready(function () {
 
     //Updates Player1 Display with Name and Room ID
     socket.on('newGame', function (data) {
-        // $('#getUsername').text(data.name)
         $('#getRoomID').text(data.room)
+        $('#chooseOption').text("Send Your Opponent the Room ID: "+ $("#getRoomID").text());
         $('#whosTurn').text("Your Turn! You are X's");
         $('#err').hide();
     })
 
-    //Updates when Player2 enters displaying their Name, also broadcasts player1 name to player 2
-    socket.on('player1', function (data) {
-        twoPlayers = true;
-        $('#opponent').text("You are playing against: " + data.name);
-        socket.emit('player1Details', {
-            name: $('#getUsername').text(),
-            room: $('#getRoomID').text()
-        })
-        $('#err').text("")
-    })
-
-    //Updates Player2 Display with Name and Room ID
-    socket.on('player2', function (data) {
-        // $('#getUsername').text(data.name)
-        $('#getRoomID').text(data.room)
-        $('#chooseOption').hide();
-        $('#backToHome').hide();
-    })
-
-    //Updates Player2 Display with Player1 Name
-    socket.on('opponent', function (data) {
-        $('#opponent').text("You are playing against: " + data.name);
-        twoPlayers = true;
-    })
-
-    //Joins Excisting Game Instance
+    //Joins Existing Game Instance
     $('#join').click(function () {
         socket.emit('joinGame', {
             name: $('#getUsername').text(),
@@ -113,16 +82,41 @@ $(document).ready(function () {
                 $('#err').hide()
                 $('#message').text("");
             }else{
-                $('#err').show();
-                $('#err').text('Please try Again!')
+                $('#err').show().text('Please try Again!')
             }
         })
     })
 
+    //Updates player1 when Player2 enters, displaying their Name, also broadcasts player1 name to player 2
+    socket.on('player2Joined', function (data) {
+        twoPlayers = true;
+        $('#opponent').text("You are playing against: " + data.name);
+        $('#chooseOption').hide();
+
+        //emit player1 details to player2
+        socket.emit('player1Details', {
+            name: $('#getUsername').text(),
+            room: $('#getRoomID').text()
+        })
+        $('#err').text("")
+    })
+
+    //Updates Player2 Display with Name and Room ID
+    socket.on('player2', function (data) {
+        $('#getRoomID').text(data.room)
+        $('#chooseOption, #backToHome').hide();
+        $('#whosTurn').text("Please Wait For Your Opponent");
+    })
+
+    //Updates Player2 Display with Player1 Name
+    socket.on('opponent', function (data) {
+        $('#opponent').text("You are playing against: " + data.name);
+        twoPlayers = true;
+    })
+
     //Error listener
     socket.on('err', function (data) {
-        $('#err').show();
-        $('#err').text(data.message)
+        $('#err').show().text(data.message)
     })
 
     //Checks if its players turn, if so submits data about turn, ie grid location
@@ -131,12 +125,12 @@ $(document).ready(function () {
             if (clientTurn == true && twoPlayers == true) {
 
                 //When user clicks on grid
-                var idAttr = $(this).attr('id');
-                if ($('#' + idAttr).text() == "X" || $('#' + idAttr).text() == "O") {
-                    $('#err').show();
-                    $('#err').text("Option Not Value, Choose Another!")
+                var GridBoxAttr = $('#' + $(this).attr('id'));
+
+                if (GridBoxAttr.text() == "X" || GridBoxAttr.text() == "O") {
+                    $('#err').show().text("Option Not Valid, Choose Another!")
                 } else {
-                    $('#' + idAttr).text(XorO);
+                    GridBoxAttr.text(XorO);
                     updateGameGrid();
                     checkWinner()
                     $('#whosTurn').text("Please Wait For Your Opponent");
@@ -144,19 +138,14 @@ $(document).ready(function () {
                     clientTurn = false;
                     socket.emit('turnPlayed', {
                         XorO: XorO,
-                        gameGrid: updateGameGrid(),
+                        gameGrid: board,
                         username: $('#getUsername').text(),
                         room: $('#getRoomID').text()
                     })
-                    
-
                 }
             } else {
-                $('#err').show();
-                $('#err').text("Please Wait for Player 2!")
+                $('#err').show().text("Please Wait for Player 2!")
             }
-        } else {
-            console.log("Game has ended")
         }
     })
 
@@ -164,11 +153,10 @@ $(document).ready(function () {
     socket.on('playTurn', function (data) {
         clientTurn = true;
         if (data.XorO == "X") {
-            $('#whosTurn').text("Your Turn! You are O's");
+            $('#whosTurn').show().text("Your Turn! You are O's");
         } else {
-            $('#whosTurn').text("Your Turn! You are X's");
+            $('#whosTurn').show().text("Your Turn! You are X's");
         }
-        $('#whosTurn').show();
         $('#err').hide()
         generate3x3(data.gameGrid)
         updateGameGrid();
@@ -176,12 +164,10 @@ $(document).ready(function () {
 
     socket.on('gameEnd', function (data) {
         gameEnded = true;
-        console.log(gameEnded)
         $('#message').text("The winner is: " + data.winningUser)
         if(data.winningUser != $('#getUsername').text()){
             $('#message').css('color', 'red');
         }
-        $('#whosTurn').text("Please Wait For Your Opponent");
         $('#backToHome').show();
     })
 
@@ -189,34 +175,33 @@ $(document).ready(function () {
         return a == b && b == c && a != '';
     }
 
-
     function checkWinner() {
         let winner = null;
 
-        var count = 0;
+        var availableSquares = 0;
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
                 if (board[i][j] == "") {
-                    count++;
+                    availableSquares++;
                 }
             }
         }
 
-        // horizontal
+        // Check Horizontal
         for (let i = 0; i < 3; i++) {
             if (equals3(board[i][0], board[i][1], board[i][2])) {
                 winner = board[i][0];
             }
         }
 
-        // Vertical
+        // Check Vertical
         for (let i = 0; i < 3; i++) {
             if (equals3(board[0][i], board[1][i], board[2][i])) {
                 winner = board[0][i];
             }
         }
 
-        // Diagonal
+        // Check Diagonal
         if (equals3(board[0][0], board[1][1], board[2][2])) {
             winner = board[0][0];
         }
@@ -224,7 +209,7 @@ $(document).ready(function () {
             winner = board[2][0];
         }
 
-        if (winner == null && count == 0) {
+        if (winner == null && availableSquares == 0) {
             // return 'tie';
             gameEnded = true;
             $('#message').text("The winner is: tie")
@@ -232,7 +217,7 @@ $(document).ready(function () {
                 username: 'tie',
                 room: $('#getRoomID').text()
             })
-            $('#whosTurn').text("Please Wait For Your Opponent");
+            $('#whosTurn').text("Game Over");
         } else {
             // return winner;
             if (winner != null) {
@@ -242,7 +227,7 @@ $(document).ready(function () {
                     username: $('#getUsername').text(),
                     room: $('#getRoomID').text()
                 })
-                $('#whosTurn').text("Please Wait For Your Opponent");
+                $('#whosTurn').text("Game Over");
                 $('#backToHome').show();
             }
         }

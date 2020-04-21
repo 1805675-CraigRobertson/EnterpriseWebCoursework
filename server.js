@@ -3,7 +3,7 @@ const mongodb = require('mongodb');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const session = require('express-session')
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcrypt')
 const port = process.env.PORT || 5000;
 const url = process.env.MONGODB_URI || 'mongodb://localhost:27017';
 
@@ -26,6 +26,7 @@ app.use(function(req, res, next) {
     next();
   });
 
+
 app.get('/', async(req, res) => {
     res.render('pages/main', {username: req.session.username});
 })
@@ -45,26 +46,39 @@ app.get('/userDeets', async (req, res) =>{
 })
 
 app.post('/login', async (req, res) => {
-    const users = await loadUsersCollection();
-    const user = await users.findOne({username: req.body.username});
-    if(user == null){
+    const user = await userExist(req)
+    if(user != null){
+        try{
+            if(await bcrypt.compare(req.body.password, user.password)){
+                req.session.loggedin = true;
+                req.session.username = user.username;
+                res.send({result:1, message:'Success'});
+            }else{
+                //passwords dont match
+                res.send({result:2, message: 'Falied2'})
+            }
+        }catch{
+            res.send({result:2, message: 'Falied3'})
+        }
+    }else{
         //user not found
         res.send({result:2, message: 'Falied1'})
     }
-
-    try{
-        if(await bcrypt.compare(req.body.password, user.password)){
-            req.session.loggedin = true;
-            req.session.username = user.username;
-            res.send({result:1, message:'Success'});
-        }else{
-            //passwords dont match
-            res.send({result:2, message: 'Falied2'})
-        }
-    }catch{
-        res.send({result:2, message: 'Falied3'})
-    }
 });
+
+async function userExist(req){
+    const users = await loadUsersCollection();
+    const user = await users.findOne({username: req.body.username});
+    if(user == null){
+        return new Promise(resolve =>{
+            resolve(user);
+        })
+    }
+    return new Promise(resolve =>{
+        resolve(user)
+    })
+}
+
 
 //Register GET & POST
 app.get('/register', (req, res) => {
@@ -73,16 +87,15 @@ app.get('/register', (req, res) => {
 
 app.post('/register', async (req, res) => {
     const users = await loadUsersCollection();
-    const user = await users.findOne({username: req.body.username});
-    if(user){
-        res.send({result:2, message: 'Failed'})
+    const user = await userExist(req);
+    if(user != null){
+        res.send({result:2, message: 'Failed1'})
     }else{
         if(req.body.password == "" || req.body.username == "" || req.body.email == ""){
-            res.send({result:2, message: 'Failed'})
+            res.send({result:2, message: 'Failed2'})
         }else{
             try{
                 const hashedPassword = await bcrypt.hash(req.body.password, 10);
-                // const users = await loadUsersCollection();
                 await users.insertOne({
                     id: Date.now().toString(),
                     username: req.body.username,
@@ -91,7 +104,7 @@ app.post('/register', async (req, res) => {
                 });
                 res.send({result:1, message: 'Success'})
             }catch{
-                res.send({result:2, message: 'Failed'})
+                res.send({result:2, message: 'Failed3'})
             }
         }
     }
@@ -127,7 +140,7 @@ app.get('/tic', (req,res) => {
     res.render('pages/tictactoe');
 })
 
-//Socket.io could be in /Dashboard
+//Socket.io 
 var rooms = 0;
 io.on('connection', function(socket){
 
@@ -140,7 +153,7 @@ io.on('connection', function(socket){
         var room = io.nsps['/'].adapter.rooms[data.room];
         if( room && room.length == 1){
             socket.join(data.room);
-            socket.broadcast.to(data.room).emit('player1', {name: data.name});
+            socket.broadcast.to(data.room).emit('player2Joined', {name: data.name});
             socket.emit('player2', {name: data.name, room: data.room})
             fn(true);
         }

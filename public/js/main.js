@@ -1,6 +1,6 @@
 $(document).ready(function(){
-    
     $("#registerButton").click(function() {
+        $('#registerErr').text("");
         $.ajax({
             type:'POST',
             data:JSON.stringify({
@@ -20,6 +20,7 @@ $(document).ready(function(){
     })
 
     $("#loginButton").click(function() {
+        $('#loginErr').text("");
         $.ajax({
             type:'POST',
             data:JSON.stringify({
@@ -36,5 +37,4 @@ $(document).ready(function(){
             }    
         })
     })
-
 })
