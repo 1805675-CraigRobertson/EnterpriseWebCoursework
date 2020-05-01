@@ -20,6 +20,13 @@ td {
     vertical-align: middle;
 }
 
+@media screen and (max-width: 480px) {
+    td{
+        height: 75px;
+        width: 75px;
+    }
+  }
+
 table,
 tr,
 td {
@@ -111,7 +118,8 @@ li a:hover {
     font-size: 30px;
 }
 .parent .div4 img{
-    height:25em;
+    max-width: 50%;
+    height:auto;
     width:25em;
 }
 .parent .div4 #game3x3{

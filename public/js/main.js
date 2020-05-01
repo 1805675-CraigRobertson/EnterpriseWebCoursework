@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    var clientTurn = false;
-    var gameEnded = false;
-    var XorO = '';
-    var twoPlayers = false;
+    let clientTurn = false;
+    let gameEnded = false;
+    let XorO = '';
+    let twoPlayers = false;
     let board = [
         ['', '', ''],
         ['', '', ''],
@@ -10,19 +10,14 @@ $(document).ready(function () {
     ];
     const socket = io.connect();
 
-    $('#game').hide();
-    $('#backToHome').hide();
-    generate3x3(board)
-    updateGameGrid()
-
     //Generate & Display 3x3 grid
     function generate3x3(board) {
         $('#game3x3').remove();
-        var table = $('<table id="game3x3">')
+        let table = $('<table id="game3x3">')
         for (i = 0; i < 3; i++) {
-            var tr = $('<tr>')
+            let tr = $('<tr>')
             for (j = 0; j < 3; j++) {
-                var td = $('<td>').text(board[i][j]).attr('id', 'row' + j + 'col' + i);
+                let td = $('<td>').text(board[i][j]).attr('id', 'row' + j + 'col' + i);
                 tr.append(td)
             }
             table.append(tr)
@@ -125,7 +120,7 @@ $(document).ready(function () {
             if (clientTurn == true && twoPlayers == true) {
 
                 //When user clicks on grid
-                var GridBoxAttr = $('#' + $(this).attr('id'));
+                let GridBoxAttr = $('#' + $(this).attr('id'));
 
                 if (GridBoxAttr.text() == "X" || GridBoxAttr.text() == "O") {
                     $('#err').show().text("Option Not Valid, Choose Another!")
@@ -178,7 +173,7 @@ $(document).ready(function () {
     function checkWinner() {
         let winner = null;
 
-        var availableSquares = 0;
+        let availableSquares = 0;
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
                 if (board[i][j] == "") {
@@ -236,4 +231,10 @@ $(document).ready(function () {
     $('#backToHome').click(function () {
         location.reload();
     })
+
+
+    $('#game').hide();
+    $('#backToHome').hide();
+    generate3x3(board)
+    updateGameGrid()
 });
