@@ -199,9 +199,9 @@ input[type=text], select, button {
     width:50%;
 }
 
-#join, #roomID{
+/* #join, #roomID{
     width:25%
-}
+} */
 
 #login #username, #password{
     width: 80%;
