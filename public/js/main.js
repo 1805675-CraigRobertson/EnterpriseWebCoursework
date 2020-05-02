@@ -159,7 +159,12 @@ $(document).ready(function () {
 
     socket.on('gameEnd', function (data) {
         gameEnded = true;
-        $('#message').text("The winner is: " + data.winningUser)
+        if(data.winningUser == "tie"){
+            $('#message').text("The Game is a tie")
+            $('#message').css('color', 'red');
+        }else{
+            $('#message').text("The winner is: " + data.winningUser)
+        }
         if(data.winningUser != $('#getUsername').text()){
             $('#message').css('color', 'red');
         }
@@ -207,7 +212,8 @@ $(document).ready(function () {
         if (winner == null && availableSquares == 0) {
             // return 'tie';
             gameEnded = true;
-            $('#message').text("The winner is: tie")
+            $('#message').text("The Game is a tie")
+            $('#message').css('color', 'red');
             socket.emit('gameEnded', {
                 username: 'tie',
                 room: $('#getRoomID').text()

@@ -156,6 +156,7 @@ li a:hover {
     float: left;
     text-align: left;
     padding: 5px;
+    font-size: 2.5vh; 
 }
 
 .childGrid .div2child{
@@ -165,7 +166,7 @@ li a:hover {
     margin: 0;
     padding: 0;
     width: fit-content;
-    font-size: 20px;
+    font-size: 2.5vh;
 }
 
 .childGrid .div2child #send, #join{
@@ -173,13 +174,17 @@ li a:hover {
 }
 
 .childGrid .div3child #message{
-    font-size: 20px;
+    font-size: 2.5vh;
     color: green;
     font-weight: bold;
 }
 
+.childGrid .div4child .div5child{
+    font-size: 2.5vh;
+}
+
 .childGrid .div6child #err{
-    font-size: 20px;
+    font-size: 2.5vh;
     color: red;
     font-weight: bold;
 }
@@ -198,10 +203,6 @@ input[type=text], select, button {
 #send{
     width:50%;
 }
-
-/* #join, #roomID{
-    width:25%
-} */
 
 #login #username, #password{
     width: 80%;
