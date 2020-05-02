@@ -27,12 +27,12 @@ app.use(function(req, res, next) {
   });
 
 
-app.get('/', async(req, res) => {
-    res.render('pages/main', {username: req.session.username});
-})
+// app.get('/', async(req, res) => {
+//     res.render('pages/main', {username: req.session.username});
+// })
 
 //Login GET & POST
-app.get('/login', async (req, res) => {
+app.get('/', async (req, res) => {
     if(req.session.username){
         res.redirect('/')
     }else{
@@ -45,7 +45,7 @@ app.get('/userDeets', async (req, res) =>{
     res.send(await users.find({}).toArray())
 })
 
-app.post('/login', async (req, res) => {
+app.post('/', async (req, res) => {
     const user = await userExist(req)
     if(user != null){
         try{
