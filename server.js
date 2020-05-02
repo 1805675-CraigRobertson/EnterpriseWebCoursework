@@ -55,14 +55,14 @@ app.post('/login', async (req, res) => {
                 res.send({result:1, message:'Success'});
             }else{
                 //passwords dont match
-                res.send({result:2, message: 'Falied2'})
+                res.send({result:2, message: 'Incorrect Password'})
             }
         }catch{
-            res.send({result:2, message: 'Falied3'})
+            res.send({result:3, message: 'Falied3'})
         }
     }else{
         //user not found
-        res.send({result:2, message: 'Falied1'})
+        res.send({result:4, message: 'User not Found!'})
     }
 });
 
@@ -89,10 +89,10 @@ app.post('/register', async (req, res) => {
     const users = await loadUsersCollection();
     const user = await userExist(req);
     if(user != null){
-        res.send({result:2, message: 'Failed1'})
+        res.send({result:2, message: 'Username already Exists!'})
     }else{
         if(req.body.password == "" || req.body.username == "" || req.body.email == ""){
-            res.send({result:2, message: 'Failed2'})
+            res.send({result:4, message: 'Input Field/s Empty'})
         }else{
             try{
                 const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -104,7 +104,7 @@ app.post('/register', async (req, res) => {
                 });
                 res.send({result:1, message: 'Success'})
             }catch{
-                res.send({result:2, message: 'Failed3'})
+                res.send({result:3, message: 'Database Fail'})
             }
         }
     }

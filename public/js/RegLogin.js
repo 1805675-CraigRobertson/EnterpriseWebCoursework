@@ -12,8 +12,8 @@ $(document).ready(function(){
                 console.log(data.result)
                 if(data.result == 1){
                     window.location.href = "/login"
-                }else if(data.result == 2){
-                    $('#registerErr').text("Error try again");
+                }else{
+                    $('#registerErr').text(data.message);
                 }
             }
         })
@@ -31,8 +31,8 @@ $(document).ready(function(){
                 console.log(data.result)
                 if(data.result == 1){
                     window.location.href = "/dashboard"
-                }else if(data.result == 2){
-                    $('#loginErr').text("Error try again");
+                }else{
+                    $('#loginErr').text(data.message);
                 }
             }    
         })
