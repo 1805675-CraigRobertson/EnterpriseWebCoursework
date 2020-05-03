@@ -3,6 +3,7 @@ $(document).ready(function(){
         $('#registerErr').text("");
         $.ajax({
             type:'POST',
+            url: '/api/register',
             data:JSON.stringify({
                 username: $("#username").val(),
                 email: $("#email").val(),
@@ -23,6 +24,7 @@ $(document).ready(function(){
         $('#loginErr').text("");
         $.ajax({
             type:'POST',
+            url: '/api/login',
             data:JSON.stringify({
                 username: $("#username").val(),
                 password: $("#password").val()}),
