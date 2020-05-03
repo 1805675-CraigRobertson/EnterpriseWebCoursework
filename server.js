@@ -11,6 +11,8 @@ const app = express()
 var server = require('http').createServer(app);
 const io = require('socket.io')(server)
 
+const { check, validationResult } = require('express-validator');
+
 app.use(session({
 	secret: 'secret',
 	resave: true,
@@ -34,7 +36,7 @@ app.get('/', async(req, res) => {
 //Login GET & POST
 app.get('/login', async (req, res) => {
     if(req.session.username){
-        res.redirect('/')
+        res.redirect('/dashboard')
     }else{
         res.render('pages/login')
     }
@@ -45,24 +47,37 @@ app.get('/userDeets', async (req, res) =>{
     res.send(await users.find({}).toArray())
 })
 
-app.post('/login', async (req, res) => {
-    const user = await userExist(req)
-    if(user != null){
-        try{
-            if(await bcrypt.compare(req.body.password, user.password)){
-                req.session.loggedin = true;
-                req.session.username = user.username;
-                res.send({result:1, message:'Success'});
-            }else{
-                //passwords dont match
-                res.send({result:2, message: 'Incorrect Password'})
-            }
-        }catch{
-            res.send({result:3, message: 'Falied3'})
-        }
+app.post('/login', [
+    check('username').notEmpty().escape().trim(), 
+    check('password').notEmpty().escape().trim()
+] , async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param });
     }else{
-        //user not found
-        res.send({result:4, message: 'User not Found!'})
+        if(req.session.username){
+            res.render('pages/dashboard')
+        }else{
+            const user = await userExist(req)
+            if(user != null){
+                try{
+                    if(await bcrypt.compare(req.body.password, user.password)){
+                        req.session.loggedin = true;
+                        req.session.username = user.username;
+                        res.send({result:1, msg:'Success', param:''});
+                    }else{
+                        //password doesn't match
+                        res.send({result:2, msg: 'Incorrect Password', param:''})
+                    }
+                }catch{
+                    //database error
+                    res.send({result:3, msg: 'Falied3', param:''})
+                }
+            }else{
+                //user not found
+                res.send({result:4, msg: 'User not Found!', param:''})
+            }
+        }
     }
 });
 
@@ -82,17 +97,26 @@ async function userExist(req){
 
 //Register GET & POST
 app.get('/register', (req, res) => {
-    res.render('pages/register');
+    if(req.session.username){
+        res.redirect('/dashboard')
+    }else{
+        res.render('pages/register')
+    }
 })
 
-app.post('/register', async (req, res) => {
-    const users = await loadUsersCollection();
-    const user = await userExist(req);
-    if(user != null){
-        res.send({result:2, message: 'Username already Exists!'})
+app.post('/register', [
+    check('username').notEmpty().escape().trim(), 
+    check('email').notEmpty().isEmail().escape().trim(), 
+    check('password').notEmpty().escape().trim()
+] , async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param });
     }else{
-        if(req.body.password == "" || req.body.username == "" || req.body.email == ""){
-            res.send({result:4, message: 'Input Field/s Empty'})
+        const users = await loadUsersCollection();
+        const user = await userExist(req);
+        if(user != null){
+            res.send({result:2, msg: 'Username already Exists!', param:''})
         }else{
             try{
                 const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -102,9 +126,9 @@ app.post('/register', async (req, res) => {
                     email: req.body.email,
                     password: hashedPassword
                 });
-                res.send({result:1, message: 'Success'})
+                res.send({result:1, msg: 'Success', param:''})
             }catch{
-                res.send({result:3, message: 'Database Fail'})
+                res.send({result:3, msg: 'Database Fail', param:''})
             }
         }
     }

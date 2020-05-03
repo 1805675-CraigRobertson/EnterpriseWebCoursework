@@ -9,11 +9,11 @@ $(document).ready(function(){
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
-                console.log(data.result)
+                console.log(data)
                 if(data.result == 1){
                     window.location.href = "/login"
                 }else{
-                    $('#registerErr').text(data.message);
+                    $('#registerErr').text(data.msg + data.param);
                 }
             }
         })
@@ -28,11 +28,11 @@ $(document).ready(function(){
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
-                console.log(data.result)
+                console.log(data)
                 if(data.result == 1){
                     window.location.href = "/dashboard"
                 }else{
-                    $('#loginErr').text(data.message);
+                    $('#loginErr').text(data.msg + data.param);
                 }
             }    
         })
