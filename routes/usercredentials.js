@@ -75,7 +75,7 @@ router.post('/register', [
 })
 
 router.get('/userDeets', async (req, res) =>{
-    let secret = req.query.secret;
+    let secret = req.query.secret || process.env.SECRET;
 
     if(secret == config.secret){
         const users = await dbModel.loadUsers();
