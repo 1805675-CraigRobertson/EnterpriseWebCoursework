@@ -1,5 +1,6 @@
 const mongodb = require('mongodb');
-const url = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+const config = require("../config.json")
+const url = config.MongoDBurl;
 
 async function userExist(req){
     const users = await loadUsersCollection();

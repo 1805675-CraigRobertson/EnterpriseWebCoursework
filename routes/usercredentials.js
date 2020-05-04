@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
+const config = require("../config.json")
 
 const { check, validationResult } = require('express-validator');
 
@@ -74,9 +75,14 @@ router.post('/register', [
 })
 
 router.get('/userDeets', async (req, res) =>{
-    const users = await dbModel.loadUsers();
+    let secret = req.query.secret;
 
-    res.send(await users.find({}).toArray())
+    if(secret == config.secret){
+        const users = await dbModel.loadUsers();
+        res.send(await users.find({}).toArray())
+    }else{
+        res.send("Access Denied");
+    }
 })
 
 module.exports = router;
