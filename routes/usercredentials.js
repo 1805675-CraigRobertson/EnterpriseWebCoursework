@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
-const config = require("../config.json")
+// const config = require("../config.json")
 
 const { check, validationResult } = require('express-validator');
 
@@ -76,7 +76,8 @@ router.post('/register', [
 
 router.get('/userDeets', async (req, res) =>{
     let userSecret = req.query.secret;
-    let secretPass = config.secret || process.env.SECRET;
+    // let secretPass = config.secret || process.env.SECRET;
+    let secretPass = process.env.SECRET;
 
     if(userSecret == secretPass){
         const users = await dbModel.loadUsers();
