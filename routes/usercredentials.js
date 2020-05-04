@@ -10,20 +10,20 @@ let dbModel = require('../models/userdata.model');
 
 //Login POST Route
 router.post('/login', [
-    check('username').notEmpty().escape().trim(), 
+    check('username').notEmpty().escape().trim(), //sanitize inputs
     check('password').notEmpty().escape().trim()
 ] , async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param });
+        return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param }); //send errors back
     }else{
-        if(req.session.username){
+        if(req.session.username){ //if logged in redirect to dashboard
             res.render('pages/dashboard')
         }else{
-            const user = await dbModel.userExist(req);
+            const user = await dbModel.userExist(req); //check if user exists
             if(user != null){
                 try{
-                    if(await bcrypt.compare(req.body.password, user.password)){
+                    if(await bcrypt.compare(req.body.password, user.password)){ //compare DB hash with input hash
                         req.session.loggedin = true;
                         req.session.username = user.username;
                         res.send({result:1, msg:'Success', param:''});
@@ -46,22 +46,22 @@ router.post('/login', [
 
 //Register POST Route
 router.post('/register', [
-    check('username').notEmpty().escape().trim(), 
+    check('username').notEmpty().escape().trim(), //sanitize inputs 
     check('email').notEmpty().isEmail().escape().trim(), 
     check('password').notEmpty().escape().trim()
 ] , async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param });
+        return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param }); //send errors back
     }else{
-        const users = await dbModel.loadUsers();
-        const user = await dbModel.userExist(req);
+        const users = await dbModel.loadUsers(); //load all users
+        const user = await dbModel.userExist(req); //check if user exists
         if(user != null){
             res.send({result:2, msg: 'Username already Exists!', param:''})
         }else{
             try{
-                const hashedPassword = await bcrypt.hash(req.body.password, 10);
-                await users.insertOne({
+                const hashedPassword = await bcrypt.hash(req.body.password, 10); //hash input password 
+                await users.insertOne({ //insert data into document 
                     id: Date.now().toString(),
                     username: req.body.username,
                     email: req.body.email,

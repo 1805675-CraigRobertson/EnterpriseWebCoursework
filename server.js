@@ -16,7 +16,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(function(req, res, next) {
+app.use(function(req, res, next) { //set user session
     res.locals.username = req.session.username;
     next();
   });

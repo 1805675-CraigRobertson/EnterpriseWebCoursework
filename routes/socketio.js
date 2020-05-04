@@ -8,7 +8,7 @@ module.exports = server =>{
 
         //listen for create game emit
         socket.on('createGame', function(data){
-            socket.join('room-' + ++rooms);
+            socket.join('room-' + ++rooms); //join a room
             socket.emit('newGame', {name: data.name, room: 'room-'+rooms});
         })
 
@@ -16,7 +16,7 @@ module.exports = server =>{
         socket.on('joinGame', function(data,fn){
             var room = io.nsps['/'].adapter.rooms[data.room];
             if( room && room.length == 1){
-                socket.join(data.room);
+                socket.join(data.room); //join a room
                 socket.broadcast.to(data.room).emit('player2Joined', {name: data.name});
                 socket.emit('player2', {name: data.name, room: data.room})
                 fn(true);

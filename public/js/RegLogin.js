@@ -6,13 +6,13 @@ $(document).ready(function(){
         $.ajax({
             type:'POST',
             url: '/api/register',
-            data:JSON.stringify({
+            data:JSON.stringify({ //grab user data from inputs
                 username: $("#username").val(),
                 email: $("#email").val(),
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
-                if(data.result == 1){
+                if(data.result == 1){ //if register successful
                     window.location.href = "/login"
                 }else{
                     $('#registerErr').text(data.msg + data.param);
@@ -28,12 +28,12 @@ $(document).ready(function(){
         $.ajax({
             type:'POST',
             url: '/api/login',
-            data:JSON.stringify({
+            data:JSON.stringify({ //grab user data from inputs
                 username: $("#username").val(),
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
-                if(data.result == 1){
+                if(data.result == 1){ //if login successful
                     window.location.href = "/dashboard"
                 }else{
                     $('#loginErr').text(data.msg + data.param);

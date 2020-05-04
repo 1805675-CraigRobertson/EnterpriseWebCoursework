@@ -4,13 +4,14 @@ const url = process.env.MONGODB_URI || 'mongodb://localhost:27017'
 
 //Method to check is a User Already Exists
 async function userExist(req){
-    const users = await loadUsersCollection();
-    const user = await users.findOne({username: req.body.username});
-    if(user == null){
+    const users = await loadUsersCollection(); //load all users
+    const user = await users.findOne({username: req.body.username}); //find specific user
+    if(user == null){ //if user not found return null
         return new Promise(resolve =>{
             resolve(user);
         })
     }
+    //if user exist return user data
     return new Promise(resolve =>{
         resolve(user)
     })
@@ -18,6 +19,7 @@ async function userExist(req){
 
 //Retrieve all Users from DB
 async function loadUsersCollection(){
+    //connect to Database
     const client = await mongodb.MongoClient.connect(url, {
         useNewUrlParser: true
     });

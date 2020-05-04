@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    //initiate variables 
     let clientTurn = false;
     let gameEnded = false;
     let XorO = '';
@@ -39,12 +40,13 @@ $(document).ready(function () {
             }
         }
 
-        board = updatedBoard;
+        board = updatedBoard; //set current board to updated
         return board
     }
 
-    //Creates new Game Instance
+    //Creates new Game Instance on click
     $('#createNewGame').click(function () {
+        //emit createGame to server with data
         socket.emit('createGame', {
             name: $("#getUsername").text()
         })
@@ -56,6 +58,7 @@ $(document).ready(function () {
     })
 
     //Updates Player1 Display with Name and Room ID
+    //Listens for newGame emit from server
     socket.on('newGame', function (data) {
         $('#getRoomID').text(data.room)
         $('#chooseOption').text("Send Your Opponent the Room ID: "+ $("#getRoomID").text());
@@ -63,26 +66,28 @@ $(document).ready(function () {
         $('#err').hide();
     })
 
-    //Joins Existing Game Instance
+    //Joins Existing Game Instance on click
     $('#join').click(function () {
+        //emit joinGame to server with data
         socket.emit('joinGame', {
             name: $('#getUsername').text(),
             room: $('#roomID').val()
         }, function(data){
-            if(data == true){
+            if(data == true){ //if join was successful
                 $('#inputs').hide();
                 $('#game').show();
                 clientTurn = false;
                 XorO = 'O'
                 $('#err').hide()
                 $('#message').text("");
-            }else{
+            }else{ //if not preview error
                 $('#err').show().text('Please try Again!')
             }
         })
     })
 
     //Updates player1 when Player2 enters, displaying their Name, also broadcasts player1 name to player 2
+    //listens for player2Joined emit from server
     socket.on('player2Joined', function (data) {
         twoPlayers = true;
         $('#opponent').text("You are playing against: " + data.name);
@@ -115,22 +120,25 @@ $(document).ready(function () {
     })
 
     //Checks if its players turn, if so submits data about turn, ie grid location
+    //When user click on a grid square 
     $('body').on('click', 'td', function () {
-        if (gameEnded == false) {
+        if (gameEnded == false) { //check if game has ended
             if (clientTurn == true && twoPlayers == true) {
 
                 //When user clicks on grid
                 let GridBoxAttr = $('#' + $(this).attr('id'));
 
-                if (GridBoxAttr.text() == "X" || GridBoxAttr.text() == "O") {
+                //if user click on grid that is already set show error
+                if (GridBoxAttr.text() == "X" || GridBoxAttr.text() == "O") { 
                     $('#err').show().text("Option Not Valid, Choose Another!")
                 } else {
-                    GridBoxAttr.text(XorO);
-                    updateGameGrid();
-                    checkWinner()
+                    GridBoxAttr.text(XorO); //place X or O on grid
+                    updateGameGrid(); //updates the current game grid
+                    checkWinner() //check if they have won
                     $('#whosTurn').text("Please Wait For Your Opponent");
                     $('#err').text("")
                     clientTurn = false;
+                    //emit updated grid to 2nd player 
                     socket.emit('turnPlayed', {
                         XorO: XorO,
                         gameGrid: board,
@@ -144,7 +152,7 @@ $(document).ready(function () {
         }
     })
 
-    //retrive player turn data 
+    //listen for player turn data 
     socket.on('playTurn', function (data) {
         clientTurn = true;
         if (data.XorO == "X") {
@@ -153,19 +161,20 @@ $(document).ready(function () {
             $('#whosTurn').show().text("Your Turn! You are X's");
         }
         $('#err').hide()
-        generate3x3(data.gameGrid)
-        updateGameGrid();
+        generate3x3(data.gameGrid) //generate grid with new updated grid
+        updateGameGrid(); //update grid interface
     })
 
+    //listen for gameEnded emit
     socket.on('gameEnd', function (data) {
         gameEnded = true;
-        if(data.winningUser == "tie"){
+        if(data.winningUser == "tie"){ //if game is a tie
             $('#message').text("The Game is a tie")
             $('#message').css('color', 'red');
         }else{
-            $('#message').text("The winner is: " + data.winningUser)
+            $('#message').text("The winner is: " + data.winningUser) //display winning username
         }
-        if(data.winningUser != $('#getUsername').text()){
+        if(data.winningUser != $('#getUsername').text()){ //If winner is not current user 
             $('#message').css('color', 'red');
         }
         $('#backToHome').show();
@@ -236,11 +245,13 @@ $(document).ready(function () {
         }
     }
 
+    //button handler to reload page
     $('#backToHome').click(function () {
         location.reload();
     })
 
 
+    //hides elements and generates updates game grid
     $('#game').hide();
     $('#backToHome').hide();
     generate3x3(board)
