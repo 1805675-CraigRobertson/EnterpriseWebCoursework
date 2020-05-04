@@ -33,6 +33,7 @@ $(document).ready(function(){
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
+                console.log(data);
                 if(data.result == 1){ //if login successful
                     window.location.href = "/dashboard"
                 }else{

@@ -14,31 +14,28 @@ router.post('/login', [
     check('password').notEmpty().escape().trim()
 ] , async (req, res) => {
     const errors = validationResult(req);
+    console.log(errors)
     if (!errors.isEmpty()) {
         return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param }); //send errors back
     }else{
-        if(req.session.username){ //if logged in redirect to dashboard
-            res.render('pages/dashboard')
-        }else{
-            const user = await dbModel.userExist(req); //check if user exists
-            if(user != null){
-                try{
-                    if(await bcrypt.compare(req.body.password, user.password)){ //compare DB hash with input hash
-                        req.session.loggedin = true;
-                        req.session.username = user.username;
-                        res.send({result:1, msg:'Success', param:''});
-                    }else{
-                        //password doesn't match
-                        res.send({result:2, msg: 'Incorrect Password', param:''})
-                    }
-                }catch{
-                    //database error
-                    res.send({result:3, msg: 'Falied3', param:''})
+        const user = await dbModel.userExist(req); //check if user exists
+        if(user != null){
+            try{
+                if(await bcrypt.compare(req.body.password, user.password)){ //compare DB hash with input hash
+                    req.session.loggedin = true;
+                    req.session.username = user.username;
+                    res.send({result:1, msg:'Success', param:''});
+                }else{
+                    //password doesn't match
+                    res.send({result:2, msg: 'Incorrect Password', param:''})
                 }
-            }else{
-                //user not found
-                res.send({result:4, msg: 'User not Found!', param:''})
+            }catch{
+                //database error
+                res.send({result:3, msg: 'Falied3', param:''})
             }
+        }else{
+            //user not found
+            res.send({result:4, msg: 'User not Found!', param:''})
         }
     }
 });
