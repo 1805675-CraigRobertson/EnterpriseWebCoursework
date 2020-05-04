@@ -1,6 +1,8 @@
 $(document).ready(function(){
+    //When the register button is clicked
     $("#registerButton").click(function() {
         $('#registerErr').text("");
+        //POST user data to server
         $.ajax({
             type:'POST',
             url: '/api/register',
@@ -10,7 +12,6 @@ $(document).ready(function(){
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
-                console.log(data)
                 if(data.result == 1){
                     window.location.href = "/login"
                 }else{
@@ -20,8 +21,10 @@ $(document).ready(function(){
         })
     })
 
+    //When the login button is clicked
     $("#loginButton").click(function() {
         $('#loginErr').text("");
+        //POST user data to server
         $.ajax({
             type:'POST',
             url: '/api/login',
@@ -30,7 +33,6 @@ $(document).ready(function(){
                 password: $("#password").val()}),
                 contentType: 'application/json',
             success: function(data){
-                console.log(data)
                 if(data.result == 1){
                     window.location.href = "/dashboard"
                 }else{

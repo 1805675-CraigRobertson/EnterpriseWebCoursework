@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+//Login GET Route
 router.get('/login', async (req, res) => {
     if(req.session.username){
         res.redirect('/dashboard')
@@ -9,6 +10,7 @@ router.get('/login', async (req, res) => {
     }
 });
 
+//Register GET Route
 router.get('/register', (req, res) => {
     if(req.session.username){
         res.redirect('/dashboard')
@@ -17,10 +19,12 @@ router.get('/register', (req, res) => {
     }
 })
 
+//Root Route, redirects to Login
 router.get('/', async(req, res) => {
     res.redirect('/login');
 })
 
+//Dashboard GET Route
 router.get('/dashboard', (req,res) => {
     if(req.session.username){
         res.render('pages/dashboard', {username: req.session.username});
@@ -29,13 +33,16 @@ router.get('/dashboard', (req,res) => {
     }
 })
 
+//About GET Route
 router.get('/about', (req,res) =>{
     res.render('pages/about')
 })
 
+//Logout GET route
 router.get('/logout', (req,res) =>{
     req.session.destroy()
     res.redirect('/')
 })
 
+//Export router
 module.exports = router;

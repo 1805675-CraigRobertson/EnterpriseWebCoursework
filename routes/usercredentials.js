@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt')
-// const config = require("../config.json")
 
+//User input validation middleware
 const { check, validationResult } = require('express-validator');
 
+//require database methods
 let dbModel = require('../models/userdata.model');
 
-//LOGIN
+//Login POST Route
 router.post('/login', [
     check('username').notEmpty().escape().trim(), 
     check('password').notEmpty().escape().trim()
@@ -43,7 +44,7 @@ router.post('/login', [
 });
 
 
-//REGISTER
+//Register POST Route
 router.post('/register', [
     check('username').notEmpty().escape().trim(), 
     check('email').notEmpty().isEmail().escape().trim(), 
@@ -74,9 +75,9 @@ router.post('/register', [
     }
 })
 
+//Users GET Route
 router.get('/userDeets', async (req, res) =>{
     let userSecret = req.query.secret;
-    // let secretPass = config.secret || process.env.SECRET;
     let secretPass = process.env.SECRET;
 
     if(userSecret == secretPass){
@@ -87,4 +88,5 @@ router.get('/userDeets', async (req, res) =>{
     }
 })
 
+//Export Router
 module.exports = router;

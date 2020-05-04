@@ -7,7 +7,7 @@ const port = process.env.PORT || 5000;
 const app = express()
 
 app.use(session({
-	secret: 'secret',
+	secret: 'WhereDoYouThinkWeAre?',
 	resave: true,
 	saveUninitialized: true
 }));
@@ -21,13 +21,17 @@ app.use(function(req, res, next) {
     next();
   });
 
+//Require pages Route
 const routes = require('./routes/pageroutes');
 app.use('/', routes)
 
+//Require the user API Route
 const usercreds = require('./routes/usercredentials');
 app.use('/api', usercreds)
 
+//Require socket.io
 const server = require('http').createServer(app);
 require('./routes/socketio')(server);
 
+//Listen for connections
 server.listen(port, () => console.log(`server started on port ${port}`));

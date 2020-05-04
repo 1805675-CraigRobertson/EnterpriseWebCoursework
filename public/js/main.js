@@ -171,6 +171,7 @@ $(document).ready(function () {
         $('#backToHome').show();
     })
 
+    //check if three in a row
     function equals3(a, b, c) {
         return a == b && b == c && a != '';
     }
@@ -178,6 +179,7 @@ $(document).ready(function () {
     function checkWinner() {
         let winner = null;
 
+        //check how many squares still available
         let availableSquares = 0;
         for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
