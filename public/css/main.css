@@ -99,6 +99,10 @@ li a:hover {
     background: rgb(195, 255, 210);
 }
 
+.parent>div{
+    border-radius: 5px;
+}
+
 .parent .div1{
     padding: 0.5em;
 }
