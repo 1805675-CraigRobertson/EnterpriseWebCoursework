@@ -14,7 +14,6 @@ router.post('/login', [
     check('password').notEmpty().escape().trim()
 ] , async (req, res) => {
     const errors = validationResult(req);
-    console.log(errors)
     if (!errors.isEmpty()) {
         return res.json({ msg: errors.array()[0].msg + ' in ', param: errors.array()[0].param }); //send errors back
     }else{

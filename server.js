@@ -33,5 +33,9 @@ app.use('/api', usercreds)
 const server = require('http').createServer(app);
 require('./routes/socketio')(server);
 
+app.get('*', (req, res) =>{
+  res.redirect("/dashboard")
+})
+
 //Listen for connections
 server.listen(port, () => console.log(`server started on port ${port}`));
